@@ -11,6 +11,7 @@ db = firestore.client()
 doc_ref = db.collection("users").document("alovelace")
 # doc_ref.set({"first": "Ada", "last": "Lovelace", "born": 1815})
 
+# https://firebase.google.com/docs/firestore/query-data/listen?hl=ko#python
 # Create an Event for notifying main thread.
 callback_done = threading.Event()
 def on_snapshot(doc_snapshot, changes, read_time):

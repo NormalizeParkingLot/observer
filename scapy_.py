@@ -1,4 +1,22 @@
 from scapy.all import *
+import codecs
+
+def loadToHex(original_s):
+    s = str(original_s)[2:-1]
+    hexList = []
+
+    i = 0
+    while i < len(s):
+        if s[i: i+2] == "\\x":
+            hexList.append( s[i+2: i+4] )
+            i += 4
+        elif s[i: i+2] == "\\r":
+            hexList.append( "0d" )
+            i += 2
+        else:
+            hexList.append( hex(ord(s[i]))[2:] )
+            i += 1
+    return hexList
 
 def showpacket(packet):
     # https://secretpack.tistory.com/112 
@@ -7,38 +25,38 @@ def showpacket(packet):
 
     src_mac = packet[0][0].src
     dst_mac = packet[0][0].dst
-    # proto  =packet[0][1].proto
+    # proto = packet[0][1].proto
 
+    # print(packet[0][1].nh, dst_ip)
     # if proto in protocols:
         #  print('protocol : %s: %s -> %s' %(protocols[proto], src_ip,dst_ip))
-    # print(packet.show())
-    print(src_ip + ": " + src_mac)
-    print(dst_ip + ": " + dst_mac)
+    # if '66' in dst_ip:
+    # if '64' in src_ip:
+    if ("2001" in dst_ip) and (src_ip == dst_ip) and (src_mac != dst_mac):
+        # print(src_ip, dst_ip)
+        # print(src_mac, dst_mac)
+        # load = str(packet[0][3].load)
+        # rpl3_i = load.find("\\x9b\\x03")
+        # if (rpl3_i > 0) and (load[rpl3_i+24: rpl3_i+28] == "\\x01"):
+        hexList = loadToHex(packet[0][3].load)
+
+        if ("9b" in hexList) and ("03" in hexList):
+            rpl_i = hexList.index("9b")
+            code3_i = hexList.index("03")
+            
+            if (rpl_i+1 == code3_i) and (hexList[code3_i + 5] == "01"):
+                hexIpList = hexList[rpl_i-16 : rpl_i]
+                converted = []
+                for i in range(0,8): converted.append(hexIpList[2*i] + hexIpList[2*i+1])
+                newNodeIp = ':'.join(converted[:4]) + "::" + ':'.join(converted[5:])
+                print(newNodeIp)
+
+        #     print(load)
+    #     load = str(packet[0][3].load).replace("check_reception",'')
+    #     print("no car" if load[5]=='1' else "car exist")
+    # print(src_ip + ": " + src_mac)
+    # print(dst_ip + ": " + dst_mac)
         # if proto == 17:
         #     print('type:[%d], code:[%d]' %(packet[0][2].type, packet[0][2].code))
 
 sniff(iface="wisun", prn = showpacket, count = 0)
-
-"""
-packet[0]에 들어 있는 데이터(추측)
-###[ Ethernet ]###
-    dst       = 00:ff:70:9f:5a:a6
-    src       = 00:ff:71:9f:5a:a6
-    type      = IPv6
-###[ IPv6 ]###
-    version   = 6
-    tc        = 0
-    fl        = 0
-    plen      = 22
-    nh        = UDP
-    hlim      = 64
-    src       = 2001:db8::65
-    dst       = 2001:db8::1
-###[ UDP ]###
-    sport     = 61617
-    dport     = 61617
-    len       = 22
-    chksum    = 0xa6bc
-###[ Raw ]###
-    load      = '\x00\x00\x00\x00\\xe4\x0c\x00uinject'
-"""

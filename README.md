@@ -18,3 +18,4 @@
 - 역활
     1. visualizer가 있는 컴퓨터에서 실행되면서 wi-sun 모듈들의 상태를 관찰, 현재 상태를 서버(firebase)에 저장
     2. 서버에서 오는 요청을 노드로 전달
+- [참조](https://cloud.google.com/python/docs/reference/firestore/latest/google.cloud.firestore_v1.base_document.DocumentSnapshot)

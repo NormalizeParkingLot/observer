@@ -1,0 +1,44 @@
+packet[0]에 들어 있는 데이터
+###[ Ethernet ]###
+    dst       = 00:ff:70:9f:5a:a6
+    src       = 00:ff:71:9f:5a:a6
+    type      = IPv6
+###[ IPv6 ]###
+    version   = 6
+    tc        = 0
+    fl        = 0
+    plen      = 22
+    nh        = UDP
+    hlim      = 64
+    src       = 2001:db8::65
+    dst       = 2001:db8::1
+###[ UDP ]###
+    sport     = 61617
+    dport     = 61617
+    len       = 22
+    chksum    = 0xa6bc
+###[ Raw ]###
+    load      = '\x00\x00\x00\x00\\xe4\x0c\x00uinject'
+
+처음으로 리프노드가 인식 되었을때
+###[ Ethernet ]### 
+  dst       = 00:ff:70:9f:5a:a6
+  src       = 00:ff:71:9f:5a:a6
+  type      = IPv6
+###[ IPv6 ]###
+     version   = 6
+     tc        = 0
+     fl        = 0
+     plen      = 122
+     nh        = UDP
+     hlim      = 8
+     src       = 2001:db8::1
+     dst       = 2001:db8::1
+###[ UDP ]###
+        sport     = 0
+        dport     = 17754
+        len       = 122
+        chksum    = 0xd591
+###[ Raw ]### 
+           load      = 'EX\x02\x01\x00\x00\x01\x01\\xff\x01\x01\x01\x01\x01\x01\x01\x01\x02\x02\x02\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00RA\\xccf\\xfe\\xca\x08\\xc5"\x04\x00K\x12\x00\x00^0\x04\x00K\x12\x00z\x00: \x01\r\\xb8\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01 \x01\r\\xb8\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00d\\x9b\x03٘\x00\\x80\x01\x00 \x01\r\\xb8\x
+00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01J\x0c'

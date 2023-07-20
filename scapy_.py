@@ -1,5 +1,4 @@
 from scapy.all import *
-import codecs
 
 def loadToHex(original_s):
     s = str(original_s)[2:-1]
@@ -25,16 +24,10 @@ def showpacket(packet):
 
     src_mac = packet[0][0].src
     dst_mac = packet[0][0].dst
-    # proto = packet[0][1].proto
 
-    # print(packet[0][1].nh, dst_ip)
     # if proto in protocols:
         #  print('protocol : %s: %s -> %s' %(protocols[proto], src_ip,dst_ip))
-    # if '66' in dst_ip:
-    # if '64' in src_ip:
     if ("2001" in dst_ip) and (src_ip == dst_ip) and (src_mac != dst_mac):
-        # print(src_ip, dst_ip)
-        # print(src_mac, dst_mac)
         # load = str(packet[0][3].load)
         # rpl3_i = load.find("\\x9b\\x03")
         # if (rpl3_i > 0) and (load[rpl3_i+24: rpl3_i+28] == "\\x01"):
@@ -51,11 +44,8 @@ def showpacket(packet):
                 newNodeIp = ':'.join(converted[:4]) + "::" + ':'.join(converted[5:])
                 print(newNodeIp)
 
-        #     print(load)
     #     load = str(packet[0][3].load).replace("check_reception",'')
     #     print("no car" if load[5]=='1' else "car exist")
-    # print(src_ip + ": " + src_mac)
-    # print(dst_ip + ": " + dst_mac)
         # if proto == 17:
         #     print('type:[%d], code:[%d]' %(packet[0][2].type, packet[0][2].code))
 

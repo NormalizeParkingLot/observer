@@ -30,11 +30,7 @@ while i < len(s):
         hexList.append( "0d" )
         i += 2
     else:
-        # if s[i] == ":":
-        #     print(hex(ord(s[i])))
-        #     break
         hexList.append( hex(ord(s[i]))[2:] )
         i += 1
 
-# '20',     '20',    -> 01 0d
 print(hexList)

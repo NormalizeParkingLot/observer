@@ -42,7 +42,7 @@ def showpacket(packet):
                 converted = []
                 for i in range(0,8): converted.append(hexIpList[2*i] + hexIpList[2*i+1])
                 newNodeIp = ':'.join(converted[:4]) + "::" + ':'.join(converted[5:])
-                print(newNodeIp)
+                print(hexList[37:45])
 
     #     load = str(packet[0][3].load).replace("check_reception",'')
     #     print("no car" if load[5]=='1' else "car exist")

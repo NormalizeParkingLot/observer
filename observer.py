@@ -9,7 +9,7 @@ from scapy.all import *
 # firebase variables
 fbCred = credentials.Certificate('./firebaseCredential.json')
 app = firebase_admin.initialize_app(fbCred)
-nodeRef = firestore.client().collection("test")
+nodeRef = firestore.client().collection("module")
 
 # socket variables
 sendSocket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
@@ -19,16 +19,16 @@ port = 61617
 macToIp = {}
 observerId = 0
 
-def registerNode(mac, observerId): nodeRef.document(mac).set({"connected": False, "observerId": observerId})
+def registerNode(mac, observerId): nodeRef.document(mac).set({"connected": False, "observerId": observerId, "isBlocked": True})
 
 def documnetEventListener(col_snapshot, changes, read_time):
     for change in changes:
         if change.type.name == "MODIFIED":
-            msg = 1 if change.document.get("valid") else 0
+            msg = 0 if change.document.get("isBlocked") else 1
             dst = macToIp[change.document.id]
             sendToNode(dst, msg)
 
-def updateDocument(mac, carState): nodeRef.document(mac).set({"car": carState})
+def updateDocument(mac, isOcupied): nodeRef.document(mac).update({"isOcupied": isOcupied})
 
 def packetLoadToHex(original_s):
     s = str(original_s)[2:-1]
@@ -66,6 +66,10 @@ def handlePacket(rowPacket):
             
             # 01을 체크 하는거는 응답이 계속 오기때문에 처음만 체크
             if (rpl_i+1 == code3_i) and (hexList[code3_i + 5] == "01"):
+                # 인터넷 레이어의 mac주소 != 모듈의 mac주소
+                # IEEE802.15.4 쪽의 packet에서 모듈의 mac주소 탐지
+                dst_mac = ':'.join(hexList[37:45])
+
                 hexIpList = hexList[rpl_i-16 : rpl_i]
                 converted = []
                 for i in range(0,8): converted.append(hexIpList[2*i] + hexIpList[2*i+1])
@@ -75,12 +79,15 @@ def handlePacket(rowPacket):
                 print("mac: " + dst_mac + "    / ip: " + macToIp[dst_mac])
     
     # node state udpate
-    load = str(pk[3].load)
-    if "check_reception" in load:
-        carState = '1' in load
-        updateDocument(pk[0].src, carState)
+    if hasattr(pk[3], "load"):
+        load = str(pk[3].load)
+        if "check_reception" in load:
+            isOcupied = '1' in load
+            print(pk[0].src)
+            updateDocument(pk[0].src, isOcupied)
 
 def sendToNode(dst, msg):
+    print("sendToNode")
     sendSocket.connect((dst, port))
     sendSocket.send(msg.to_bytes(1, 'big'))
     # sendSocket.close()
@@ -90,8 +97,8 @@ def sendToNode(dst, msg):
 col_query = nodeRef.where(filter=FieldFilter("observerId", "==", observerId))
 query_watch = col_query.on_snapshot(documnetEventListener)
 
-while True:
-    # sniff(iface="wisun", prn = handlePacket, count = 1)
-    quit = input("type q if you want quit this : ")
-    break;  
+# while True:
+sniff(iface="wisun", prn = handlePacket, count = 0)
+    # quit = input("type q if you want quit this : ")
+    # break;  
 sendSocket.close()

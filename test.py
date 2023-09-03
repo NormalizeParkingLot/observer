@@ -33,4 +33,7 @@ while i < len(s):
         hexList.append( hex(ord(s[i]))[2:] )
         i += 1
 
-print(hexList)
+# print(hexList)
+
+l = ['08', 'c5', '22', '04', '00', '4b', '12', '00']
+print(':'.join(l))

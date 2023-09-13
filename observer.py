@@ -83,8 +83,13 @@ def handlePacket(rowPacket):
         load = str(pk[3].load)
         if "check_reception" in load:
             isOcupied = '1' in load
-            print(pk[0].src)
-            updateDocument(pk[0].src, isOcupied)
+            hexList = packetLoadToHex(pk[3].load)
+
+            if(len(hexList) > 20):
+                dst_mac = ':'.join(hexList[45:53])
+                print(dst_mac)
+                updateDocument(dst_mac, isOcupied)
+            # print(dst_mac)
 
 def sendToNode(dst, msg):
     print("sendToNode")

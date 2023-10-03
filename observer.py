@@ -82,12 +82,10 @@ def handlePacket(rowPacket):
     if hasattr(pk[3], "load"):
         load = str(pk[3].load)
         if "check_reception" in load:
-            isOcupied = '1' in load
             hexList = packetLoadToHex(pk[3].load)
-
             if(len(hexList) > 20):
                 dst_mac = ':'.join(hexList[45:53])
-                print(dst_mac)
+                isOcupied = (hexList[102] == 1)
                 updateDocument(dst_mac, isOcupied)
             # print(dst_mac)
 

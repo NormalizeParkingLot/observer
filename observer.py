@@ -33,7 +33,7 @@ def documnetEventListener(col_snapshot, changes, read_time):
             dst = uidToIp[change.document.id]
             sendToNode(dst, msg)
 
-def updateDocument(mac, isOcupied): nodeRef.document(mac).update({"isOcupied": isOcupied})
+def updateDocument(mac, isOccupied): nodeRef.document(mac).update({"isOccupied": isOccupied})
 
 def packetLoadToHex(original_s):
     s = str(original_s)[2:-1]
@@ -70,14 +70,13 @@ def handlePacket(rowPacket):
                 uidToIp[unique_id] = src_ip
                 print(unique_id + " registered")
 
-            isOcupied = (hexList[0] == '01')
-            updateDocument(unique_id, isOcupied)
+            isOccupied = (hexList[0] == '01')
+            updateDocument(unique_id, isOccupied)
 
 def sendToNode(dst, msg):
     print("sendToNode")
     sendSocket.connect((dst, port))
     sendSocket.send(msg.to_bytes(1, 'big'))
-    # sendSocket.close()
 
 
 # run
